@@ -1,0 +1,49 @@
+services:
+  ss-guard:
+    image: ubuntu:24.04
+    container_name: ss-guard
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    command: >
+      bash -lc "apt-get update &&
+                apt-get install -y --no-install-recommends iptables iproute2 socat ca-certificates kmod docker.io &&
+                modprobe xt_connlimit || echo 'Warning: xt_connlimit module not available' &&
+                mkdir -p /opt/ss-guard &&
+                cp /mnt/scripts/* /opt/ss-guard/ &&
+                chmod +x /opt/ss-guard/*.sh &&
+                echo 'ss-guard ready'; tail -f /dev/null"
+    volumes:
+      - ./scripts:/mnt/scripts:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  ss-manager:
+    image: shadowsocks/shadowsocks-libev:latest
+    container_name: ss-manager
+    user: "0:0"
+    environment:
+      - HOME=/root
+    command: >
+      ss-manager
+      -m aes-256-gcm
+      -u
+      --manager-address 0.0.0.0:6001
+      -c /etc/shadowsocks-libev/config.json
+    ports:
+      - "8388-8399:8388-8399/tcp"
+      - "8388-8399:8388-8399/udp"
+      - "6001:6001/udp"
+    volumes:
+      - ./ss-config.json:/etc/shadowsocks-libev/config.json:ro
+    networks:
+      - ss-internal-network
+    depends_on:
+      - ss-guard
+    restart: always
+
+networks:
+  ss-internal-network:
+    driver: bridge
+    internal: true

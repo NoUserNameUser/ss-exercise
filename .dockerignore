@@ -1,0 +1,39 @@
+# 通用忽略
+.git
+.gitignore
+README.md
+LICENSE
+
+# 本地编辑器/系统文件
+*.swp
+*.swo
+*.bak
+*.tmp
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python 缓存（如果以后写脚本）
+__pycache__/
+*.py[cod]
+
+# 日志/输出
+*.log
+logs/
+*.out
+
+# 容器数据目录（防止把运行时生成的数据打进镜像）
+data/
+tmp/
+cache/
+
+# 用户批量文件（通常本地维护，不打入容器）
+users.csv
+
+# docker-compose 环境文件
+.env
+
+# 只需要脚本容器拷贝一份脚本，不需要宿主机挂载全部
+scripts/*.sh~
+scripts/*.bak

@@ -16,6 +16,8 @@ jobs:
       - uses: actions/checkout@v6.0.2
       # install specific version of the Nodejs
       - uses: actions/setup-node@v6.3.0
+        with:
+          node-version: latest
       # run keyword tells job to execute a command on the runner
       - run: npm install -g bats
       # run command to output bats version

@@ -13,11 +13,9 @@ jobs:
     # groups together all the steps that run in the check-bats-version job.
     steps:
       # checks out the repo onto the runner. allow you to run scripts or other action against your code.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@latest
       # install specific version of the Nodejs
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - uses: actions/setup-node@latest
       # run keyword tells job to execute a command on the runner
       - run: npm install -g bats
       # run command to output bats version
